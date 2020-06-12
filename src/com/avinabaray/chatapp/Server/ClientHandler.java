@@ -1,8 +1,10 @@
 package com.avinabaray.chatapp.Server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.avinabaray.chatapp.Models.MessageModel;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -17,13 +19,13 @@ class ClientHandler extends Thread {
     private String name;
     boolean isloggedin;
     private final Socket currSock;
-    private final DataInputStream is;
-    private final DataOutputStream os;
+    private final ObjectInputStream objIS;
+    private final ObjectOutputStream objOS;
 
-    ClientHandler(Socket currSock, String name, DataInputStream is, DataOutputStream os) {
+    ClientHandler(Socket currSock, String name, ObjectInputStream objIS, ObjectOutputStream objOS) {
         this.currSock = currSock;
-        this.is = is;
-        this.os = os;
+        this.objIS = objIS;
+        this.objOS = objOS;
         this.name = name;
         this.isloggedin = true;
     }
@@ -31,32 +33,36 @@ class ClientHandler extends Thread {
     @Override
     public void run() {
         super.run();
-        String received;
 
         while (true) {
 
             try {
-                received = is.readUTF();
-                System.out.println(received);
+                MessageModel received = (MessageModel) objIS.readObject();
+                System.out.println(received.getMessage());
 
-                if (received.equalsIgnoreCase("logout")) {
+                if (received.getMessage().equalsIgnoreCase("logout")) {
                     isloggedin = false;
                     currSock.close();
                     break;
                 }
 
-                StringTokenizer st = new StringTokenizer(received, "#");
-                String msgToSend = st.nextToken();
-                String recipient = st.nextToken();
+//                StringTokenizer st = new StringTokenizer(received, "#");
+//                String msgToSend = st.nextToken();
+//                String recipient = st.nextToken();
+
+                MessageModel msgModelToSend = new MessageModel();
+                msgModelToSend.setMessage(received.getMessage());
+                msgModelToSend.setSender(received.getSender());
+                msgModelToSend.setReceiver(received.getReceiver());
 
                 for (ClientHandler ch : ServerApp.activeUsers) {
                     // if the recipient is found, write on its output stream
-                    if (ch.name.equalsIgnoreCase(recipient) && ch.isloggedin) {
-                        ch.os.writeUTF(ch.name + " : " + msgToSend);
+                    if (ch.name.equalsIgnoreCase(msgModelToSend.getReceiver()) && ch.isloggedin) {
+                        ch.objOS.writeObject(msgModelToSend);
                         break;
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
@@ -64,8 +70,8 @@ class ClientHandler extends Thread {
 
         try {
             // closing resources
-            this.is.close();
-            this.os.close();
+            this.objIS.close();
+            this.objOS.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
