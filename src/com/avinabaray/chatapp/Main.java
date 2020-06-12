@@ -1,5 +1,6 @@
 package com.avinabaray.chatapp;
 
+import com.avinabaray.chatapp.Client.ClientApp;
 import com.avinabaray.chatapp.Server.ServerApp;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Main {
@@ -23,7 +25,7 @@ public class Main {
         System.out.println("Start:");
         System.out.println("1. Server App");
         System.out.println("2. Client App");
-        System.out.println("\nEnter your choice:");
+        System.out.print("\nEnter your choice: ");
 
         switch (sc.nextInt()) {
             case 1:
@@ -34,11 +36,18 @@ public class Main {
                 break;
             default:
                 System.out.println("Choose a valid option");
+                getUserRole();
         }
     }
 
     private void newClient() {
-
+        try {
+            ClientApp.startClient();
+        } catch (UnknownHostException e) {
+            System.err.println("Host Address is invalid: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error in I/O: " + e.getMessage());
+        }
     }
 
     private void newServer() {
