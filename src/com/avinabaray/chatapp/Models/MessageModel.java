@@ -7,6 +7,15 @@ public class MessageModel implements Serializable {
     private String receiver;
     private String message;
     private String timestamp;
+    private Object object;
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
 
     public String getSender() {
         return sender;

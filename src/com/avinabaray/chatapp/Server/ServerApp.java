@@ -28,16 +28,37 @@ public class ServerApp {
                     ObjectOutputStream objOS = new ObjectOutputStream(currSock.getOutputStream());
                     ObjectInputStream objIS = new ObjectInputStream(currSock.getInputStream());
 
-                    System.out.println("Assigning new handler for this client");
-                    // creating a new thread object
-                    ClientHandler clientHandler = new ClientHandler(currSock, "user", objIS, objOS);
-                    // Adding the user to the activeUsers vector
-                    activeUsers.add(clientHandler);
-                    // starting the thread
-                    clientHandler.start();
+                    DataInputStream dataIS = new DataInputStream(currSock.getInputStream());
+                    DataOutputStream dataOS = new DataOutputStream(currSock.getOutputStream());
 
-                    // Incrementing user count
-                    userNo++;
+                    boolean validUsername = true;
+                    String username = dataIS.readUTF();
+                    for (ClientHandler ch : ServerApp.activeUsers) {
+                        if (ch.name.equals(username)) {
+                            validUsername = false;
+                            break;
+                        }
+                    }
+
+
+                    if (validUsername) {
+                        dataOS.writeInt(Constants.NEW_USER);
+                        System.out.println("Assigning new handler for this client");
+                        // creating a new thread object
+                        ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS, dataIS, dataOS);
+                        // Adding the user to the activeUsers vector
+                        System.out.println("BOOO");
+                        activeUsers.add(clientHandler);
+                        System.out.println(activeUsers.size());
+                        System.out.println(ServerApp.activeUsers.size());
+                        // starting the thread
+                        clientHandler.start();
+
+                        // Incrementing user count
+                        userNo++;
+                    } else {
+                        dataOS.writeInt(Constants.USER_EXISTS);
+                    }
 
                 } catch (Exception e) {
                     currSock.close();
