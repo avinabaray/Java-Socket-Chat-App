@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class ClientHandler extends Thread {
+public class ClientHandler extends Thread implements Serializable{
 
 //    private DateFormat forDate = new SimpleDateFormat("dd/MM/yyyy");
 //    private DateFormat forTime = new SimpleDateFormat("hh:mm:ss");
@@ -16,22 +16,21 @@ public class ClientHandler extends Thread {
     private Scanner sc = new Scanner(System.in);
 
     public String name;
-    private final DataInputStream dataIS;
-    private final DataOutputStream dataOS;
+//    private final DataInputStream dataIS;
+//    private final DataOutputStream dataOS;
     boolean isloggedin;
     private final Socket currSock;
     private final ObjectInputStream objIS;
     private final ObjectOutputStream objOS;
 
     ClientHandler(Socket currSock, String name,
-                  ObjectInputStream objIS, ObjectOutputStream objOS,
-                  DataInputStream dataIS, DataOutputStream dataOS) {
+                  ObjectInputStream objIS, ObjectOutputStream objOS) {
         this.currSock = currSock;
         this.objIS = objIS;
         this.objOS = objOS;
         this.name = name;
-        this.dataIS = dataIS;
-        this.dataOS = dataOS;
+//        this.dataIS = dataIS;
+//        this.dataOS = dataOS;
         this.isloggedin = true;
     }
 
@@ -74,6 +73,7 @@ public class ClientHandler extends Thread {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                break;
             }
 
         }

@@ -1,6 +1,8 @@
 package com.avinabaray.chatapp.Server;
 
 import com.avinabaray.chatapp.Constants;
+import com.avinabaray.chatapp.Models.MessageModel;
+import com.avinabaray.chatapp.Models.MessageType;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -9,7 +11,7 @@ import java.util.Vector;
 
 public class ServerApp {
 
-    public static Vector<ClientHandler> activeUsers = new Vector<>();
+    static Vector<ClientHandler> activeUsers = new Vector<>();
     private static int userNo = 1;
 
     public static void startListening() {
@@ -28,36 +30,52 @@ public class ServerApp {
                     ObjectOutputStream objOS = new ObjectOutputStream(currSock.getOutputStream());
                     ObjectInputStream objIS = new ObjectInputStream(currSock.getInputStream());
 
-                    DataInputStream dataIS = new DataInputStream(currSock.getInputStream());
-                    DataOutputStream dataOS = new DataOutputStream(currSock.getOutputStream());
+//                    DataInputStream dataIS = new DataInputStream(currSock.getInputStream());
+//                    DataOutputStream dataOS = new DataOutputStream(currSock.getOutputStream());
 
                     boolean validUsername = true;
-                    String username = dataIS.readUTF();
-                    for (ClientHandler ch : ServerApp.activeUsers) {
-                        if (ch.name.equals(username)) {
-                            validUsername = false;
-                            break;
+                    String username;
+                    MessageModel userModel = (MessageModel) objIS.readObject();
+                    if (userModel.getMessageType() == MessageType.USERNAME) {
+                        username = userModel.getMessage();
+                        for (ClientHandler ch : ServerApp.activeUsers) {
+                            if (ch.name.equals(username)) {
+                                validUsername = false;
+                                break;
+                            }
                         }
+                    } else {
+                        System.err.println("Username not defined");
+                        continue;
                     }
 
-
+                    MessageModel sysMsg = new MessageModel();
+                    sysMsg.setMessageType(MessageType.USERNAME);
                     if (validUsername) {
-                        dataOS.writeInt(Constants.NEW_USER);
+                        sysMsg.setMessage(Constants.NEW_USER);
+                        objOS.writeObject(sysMsg);
                         System.out.println("Assigning new handler for this client");
                         // creating a new thread object
-                        ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS, dataIS, dataOS);
+                        ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS);
                         // Adding the user to the activeUsers vector
-                        System.out.println("BOOO");
                         activeUsers.add(clientHandler);
-                        System.out.println(activeUsers.size());
-                        System.out.println(ServerApp.activeUsers.size());
                         // starting the thread
                         clientHandler.start();
+
+                        for (ClientHandler ch : activeUsers) {
+                            MessageModel activeUsersBroadcast = (MessageModel) new Object();
+                            activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
+                            activeUsersBroadcast.setObject(activeUsers);
+                            objOS.writeObject(activeUsersBroadcast);
+                        }
+
+                        System.out.println("Active Users Updated to all active clients");
 
                         // Incrementing user count
                         userNo++;
                     } else {
-                        dataOS.writeInt(Constants.USER_EXISTS);
+                        sysMsg.setMessage(Constants.USER_EXISTS);
+                        objOS.writeObject(sysMsg);
                     }
 
                 } catch (Exception e) {

@@ -3,11 +3,21 @@ package com.avinabaray.chatapp.Models;
 import java.io.Serializable;
 
 public class MessageModel implements Serializable {
+
+    private MessageType messageType;
     private String sender;
     private String receiver;
     private String message;
     private String timestamp;
     private Object object;
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
 
     public Object getObject() {
         return object;
