@@ -55,6 +55,7 @@ public class ServerApp {
                         sysMsg.setMessage(Constants.NEW_USER);
                         objOS.writeObject(sysMsg);
                         System.out.println("Assigning new handler for this client");
+                        System.err.println(username + " added");
                         // creating a new thread object
                         ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS);
                         // Adding the user to the activeUsers vector
@@ -63,7 +64,7 @@ public class ServerApp {
                         clientHandler.start();
 
                         for (ClientHandler ch : activeUsers) {
-                            MessageModel activeUsersBroadcast = (MessageModel) new Object();
+                            MessageModel activeUsersBroadcast = new MessageModel();
                             activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
                             activeUsersBroadcast.setObject(activeUsers);
                             objOS.writeObject(activeUsersBroadcast);

@@ -9,7 +9,7 @@ public class MessageModel implements Serializable {
     private String receiver;
     private String message;
     private String timestamp;
-    private Object object;
+    private transient Object object;
 
     public MessageType getMessageType() {
         return messageType;
