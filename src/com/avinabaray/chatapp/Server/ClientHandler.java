@@ -57,9 +57,9 @@ public class ClientHandler extends Thread implements Serializable {
 
                     for (ClientHandler ch : ServerApp.activeUsers) {
                         // if the recipient is found, write on its output stream
-                        if (ch.name.equalsIgnoreCase(msgModelToSend.getReceiver()) && ch.isloggedin) {
+                        if (/*ch.name.equalsIgnoreCase(msgModelToSend.getReceiver()) && */ch.isloggedin) {
                             ch.objOS.writeObject(received);
-                            break;
+//                            break;
                         }
                     }
                 } else {
