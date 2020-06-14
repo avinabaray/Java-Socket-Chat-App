@@ -42,7 +42,7 @@ public class Main {
 
     private void newClient() {
         try {
-            ClientApp.startClient();
+            (new ClientApp()).startClient();
         } catch (UnknownHostException e) {
             System.err.println("Host Address is invalid: " + e.getMessage());
         } catch (IOException e) {

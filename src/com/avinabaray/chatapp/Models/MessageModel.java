@@ -1,6 +1,9 @@
 package com.avinabaray.chatapp.Models;
 
+import com.avinabaray.chatapp.Server.ClientHandler;
+
 import java.io.Serializable;
+import java.util.Vector;
 
 public class MessageModel implements Serializable {
 
@@ -9,7 +12,7 @@ public class MessageModel implements Serializable {
     private String receiver;
     private String message;
     private String timestamp;
-    private transient Object object;
+    private Vector<ClientHandler> activeUsers;
 
     public MessageType getMessageType() {
         return messageType;
@@ -19,12 +22,12 @@ public class MessageModel implements Serializable {
         this.messageType = messageType;
     }
 
-    public Object getObject() {
-        return object;
+    public Vector<ClientHandler> getActiveUsers() {
+        return activeUsers;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    public void setActiveUsers(Vector<ClientHandler> activeUsers) {
+        this.activeUsers = activeUsers;
     }
 
     public String getSender() {

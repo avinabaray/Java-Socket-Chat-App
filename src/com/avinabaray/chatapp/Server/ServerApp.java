@@ -63,11 +63,11 @@ public class ServerApp {
                         // starting the thread
                         clientHandler.start();
 
+                        MessageModel activeUsersBroadcast = new MessageModel();
+                        activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
+                        activeUsersBroadcast.setActiveUsers(activeUsers);
                         for (ClientHandler ch : activeUsers) {
-                            MessageModel activeUsersBroadcast = new MessageModel();
-                            activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
-                            activeUsersBroadcast.setObject(activeUsers);
-                            objOS.writeObject(activeUsersBroadcast);
+                            ch.objOS.writeObject(activeUsersBroadcast);
                         }
 
                         System.out.println("Active Users Updated to all active clients");

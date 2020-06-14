@@ -2,26 +2,22 @@ package com.avinabaray.chatapp.Server;
 
 import com.avinabaray.chatapp.Constants;
 import com.avinabaray.chatapp.Models.MessageModel;
+import com.avinabaray.chatapp.Models.MessageType;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class ClientHandler extends Thread implements Serializable{
+public class ClientHandler extends Thread implements Serializable {
 
-//    private DateFormat forDate = new SimpleDateFormat("dd/MM/yyyy");
-//    private DateFormat forTime = new SimpleDateFormat("hh:mm:ss");
-
-    private Scanner sc = new Scanner(System.in);
+    private transient Scanner sc = new Scanner(System.in);
 
     public String name;
-//    private final DataInputStream dataIS;
-//    private final DataOutputStream dataOS;
     boolean isloggedin;
-    private final Socket currSock;
-    private final ObjectInputStream objIS;
-    private final ObjectOutputStream objOS;
+    private transient final Socket currSock;
+    transient final ObjectInputStream objIS;
+    transient final ObjectOutputStream objOS;
 
     ClientHandler(Socket currSock, String name,
                   ObjectInputStream objIS, ObjectOutputStream objOS) {
@@ -45,7 +41,7 @@ public class ClientHandler extends Thread implements Serializable{
                 System.out.println("Msg from " + received.getSender() +
                         " to " + received.getReceiver() + ": " + received.getMessage());
 
-                System.out.println(ServerApp.activeUsers.size());
+//                System.out.println(ServerApp.activeUsers.size());
                 if (received.getMessage().equalsIgnoreCase("logout")) {
                     isloggedin = false;
                     currSock.close();
@@ -54,6 +50,7 @@ public class ClientHandler extends Thread implements Serializable{
 
                 if (received.getSender() != null) {
                     MessageModel msgModelToSend = new MessageModel();
+                    msgModelToSend.setMessageType(MessageType.NORMAL_MSG);
                     msgModelToSend.setMessage(received.getMessage());
                     msgModelToSend.setSender(received.getSender());
                     msgModelToSend.setReceiver(received.getReceiver());
@@ -61,7 +58,7 @@ public class ClientHandler extends Thread implements Serializable{
                     for (ClientHandler ch : ServerApp.activeUsers) {
                         // if the recipient is found, write on its output stream
                         if (ch.name.equalsIgnoreCase(msgModelToSend.getReceiver()) && ch.isloggedin) {
-                            ch.objOS.writeObject(msgModelToSend);
+                            ch.objOS.writeObject(received);
                             break;
                         }
                     }

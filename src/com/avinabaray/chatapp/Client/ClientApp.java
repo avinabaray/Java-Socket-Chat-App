@@ -4,7 +4,6 @@ import com.avinabaray.chatapp.Constants;
 import com.avinabaray.chatapp.Models.MessageModel;
 import com.avinabaray.chatapp.Models.MessageType;
 import com.avinabaray.chatapp.Server.ClientHandler;
-import com.avinabaray.chatapp.Server.ServerApp;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -15,11 +14,11 @@ import java.util.Vector;
 
 public class ClientApp {
 
-    private static String username = "user";
-    private static String prevUser = "";
+    private String username = "user";
+    private String prevUser = "";
     private static Vector<ClientHandler> activeUsers = new Vector<>();
 
-    public static void startClient() throws UnknownHostException, IOException {
+    public void startClient() throws UnknownHostException, IOException {
         Scanner sc = new Scanner(System.in);
 
         // getting host IP
@@ -74,22 +73,29 @@ public class ClientApp {
                     String msg;
                     switch (choice) {
                         case 1:
-                            for (int i = 1; i <= activeUsers.size(); i++) {
-                                ClientHandler ch = activeUsers.get(i);
+                            Vector<ClientHandler> activeUsersNow = ClientApp.activeUsers;
+                            for (int i = 1; i <= activeUsersNow.size(); i++) {
+                                ClientHandler ch = activeUsersNow.get(i - 1);
                                 System.out.println(i + ". " + ch.name);
                             }
 
-//                            System.out.println(ServerApp.activeUsers.size()); // Todo It is coming ZERO. Inspect it
-//                            for (int i = 1; i <= ServerApp.activeUsers.size(); i++) {
-//                                ClientHandler user = activeUsers.get(i);
-//                                System.out.println(" " + i + ". " + user.name);
-//                            }
-                            System.out.print("Enter user number you want to message: ");
-                            int userNo = sc.nextInt();
-                            System.out.print("Enter your message: ");
-                            msg = sc.nextLine();
-                            prevUser = activeUsers.get(userNo).name;
-                            sendMessage(username, prevUser, msg, objOS);
+                            while (true) {
+                                try {
+                                    int userNo = -1;
+                                    System.out.print("Enter user number you want to message: ");
+                                    userNo = sc.nextInt();
+                                    prevUser = activeUsers.get(userNo - 1).name;
+//                                    sc.next();
+                                    System.out.print("Enter your message: ");
+                                    sc.nextLine();
+                                    msg = sc.nextLine();
+                                    sendMessage(username, prevUser, msg, objOS);
+                                    break;
+                                } catch (Exception e) {
+                                    System.err.println("\nUser doesn't exist");
+//                                    e.printStackTrace();
+                                }
+                            }
 
                             break;
                         case 2:
@@ -128,7 +134,8 @@ public class ClientApp {
                                 System.out.println(received.getSender() + ": " + received.getMessage());
                                 break;
                             case ACTIVE_USERS_LIST:
-                                activeUsers = (Vector<ClientHandler>) received.getObject();
+                                ClientApp.activeUsers = received.getActiveUsers();
+                                System.err.println("Online users: " + received.getActiveUsers().size());
                                 break;
                         }
                     } catch (IOException | ClassNotFoundException e) {
@@ -145,7 +152,7 @@ public class ClientApp {
 
     }
 
-    private static Vector<ClientHandler> getActiveUsers(ObjectOutputStream objOS, ObjectInputStream objIS) throws IOException {
+    private Vector<ClientHandler> getActiveUsers(ObjectOutputStream objOS, ObjectInputStream objIS) throws IOException {
 
         MessageModel sysMsg = new MessageModel();
         sysMsg.setSender(null);
@@ -156,11 +163,13 @@ public class ClientApp {
         return null;
     }
 
-    private static void sendMessage(String sender, String receiver, String message, ObjectOutputStream objOS) {
+    private void sendMessage(String sender, String receiver, String message, ObjectOutputStream objOS) {
         MessageModel msgToSend = new MessageModel();
+        msgToSend.setMessageType(MessageType.NORMAL_MSG);
         msgToSend.setSender(sender);
         msgToSend.setReceiver(receiver);
         msgToSend.setMessage(message);
+        System.err.println("MSG: " + message);
         try {
             objOS.writeObject(msgToSend);
         } catch (IOException e) {
