@@ -31,8 +31,13 @@ public class ServerUI extends JFrame {
             }
 
             @Override
-            public void onOnlineUsersUpdate(String newUser) {
-                onlineUsers.append(newUser + " \n");
+            public void onOnlineUsersUpdate() {
+                // clearing old text
+                onlineUsers.setText(null);
+                for (ClientHandler ch : ServerApp.activeUsers) {
+                    if (ch.isloggedin)
+                        onlineUsers.append(ch.name + "\n");
+                }
             }
         });
 
@@ -49,14 +54,18 @@ public class ServerUI extends JFrame {
                     startServer.start();
                     ServerApp.isServerOn = true;
                 } else {
-                    chats.append("\nServer already running");
+                    chats.append("\nServer already RUNNING");
                 }
             }
         });
         STOPButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                serverApp.stopListening();
+                if (ServerApp.isServerOn) {
+                    serverApp.stopListening();
+                } else {
+                    chats.append("\nServer already STOPPED");
+                }
             }
         });
     }

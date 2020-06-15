@@ -22,6 +22,7 @@ public class ClientApp {
     private OnClientDataUpdateListener clientUIListener;
     private ObjectOutputStream objOS;
     private ObjectInputStream objIS;
+    private Socket sock;
 
 
     void setOnClientDataUpdateListener(OnClientDataUpdateListener lis) {
@@ -34,7 +35,7 @@ public class ClientApp {
         clientUIListener.onChatsUpdate("Requesting connection...");
         // getting host IP
         InetAddress ip = InetAddress.getByName(Constants.HOST_NAME);
-        Socket sock = new Socket(ip, Constants.PORT);
+        sock = new Socket(ip, Constants.PORT);
 
         // input and output streams
         objOS = new ObjectOutputStream(sock.getOutputStream());
@@ -153,7 +154,14 @@ public class ClientApp {
                         }
                     } catch (SocketException e) {
                         clientUIListener.onChatsUpdate("Server has stopped - Client Disconnected");
+                        e.printStackTrace();
                         System.exit(0);
+                    } catch (EOFException e) {
+                        System.err.println("Disconnect by User Action");
+                        clientUIListener.onChatsUpdate("DISCONNECTED SUCCESSFULLY");
+                        isConnected = false;
+                        e.printStackTrace();
+                        break;
                     } catch (IOException | ClassNotFoundException e) {
                         clientUIListener.onChatsUpdate("Error fetching message: " + e.getMessage());
                         e.printStackTrace();
@@ -190,11 +198,34 @@ public class ClientApp {
             objOS.writeObject(msgToSend);
         } catch (IOException e) {
             clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public void broadcastMessage(String msg) {
         sendMessage(username, null, msg, objOS);
+    }
+
+    public void disconnect() {
+        MessageModel msgToSend = new MessageModel();
+        msgToSend.setMessageType(MessageType.LOGOUT);
+        try {
+            objOS.writeObject(msgToSend);
+        } catch (IOException e) {
+            clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
+            clientUIListener.onChatsUpdate("DISCONNECT FAILED");
+            e.printStackTrace();
+        }
+
+
+//        try {
+//            sock.close();
+//            isConnected = false;
+//            clientUIListener.onChatsUpdate("DISCONNECTED SUCCESSFULLY");
+//        } catch (IOException e) {
+//            clientUIListener.onChatsUpdate("DISCONNECT FAILED");
+//            e.printStackTrace();
+//        }
     }
 
 //    interface SetOnActiveUsersReceivedListener {

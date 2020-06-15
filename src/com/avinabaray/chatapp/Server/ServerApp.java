@@ -68,13 +68,15 @@ public class ServerApp {
                         sysMsg.setMessage(Constants.NEW_USER);
                         objOS.writeObject(sysMsg);
                         serverUIListener.onChatsUpdate("Assigning new handler for this client");
-                        serverUIListener.onOnlineUsersUpdate(username/* + " added"*/);
                         // creating a new thread object
                         ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS, serverUIListener);
                         // Adding the user to the activeUsers vector
                         activeUsers.add(clientHandler);
                         // starting the thread
                         clientHandler.start();
+
+                        // Updating Online users
+                        serverUIListener.onOnlineUsersUpdate();
 
                         MessageModel activeUsersBroadcast = new MessageModel();
                         activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
@@ -96,6 +98,8 @@ public class ServerApp {
                     serverUIListener.onChatsUpdate("SERVER HAS STOPPED");
                     serverUIListener.onChatsUpdate("All clients disconnected");
                     isServerOn = false;
+                    activeUsers.clear();
+                    e.printStackTrace();
                     break;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -114,7 +118,11 @@ public class ServerApp {
     public void stopListening() {
         serverUIListener.onChatsUpdate("SERVER STOPPING...");
         try {
+            System.out.println("QQQ");
             serverSock.close();
+            for (ClientHandler ch : activeUsers) {
+                ch.currSock.close();
+            }
         } catch (IOException e) {
             System.out.println("ServerSocket didn't close");
             e.printStackTrace();
@@ -123,7 +131,6 @@ public class ServerApp {
 
     interface OnServerDataUpdateListener {
         void onChatsUpdate(String message);
-
-        void onOnlineUsersUpdate(String newUser);
+        void onOnlineUsersUpdate();
     }
 }

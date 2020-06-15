@@ -5,5 +5,6 @@ public enum MessageType {
     NORMAL_MSG,
     BROADCAST_MSG,
     ACTIVE_USERS_LIST,
-    ERROR_MSG
+    ERROR_MSG,
+    LOGOUT
 }

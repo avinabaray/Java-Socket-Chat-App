@@ -37,20 +37,6 @@ public class ClientUI extends JFrame implements ActionListener {
         CONNECTButton.addActionListener(this);
         DISCONNECTButton.addActionListener(this);
         sendButton.addActionListener(this);
-
-//        CONNECTButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
-
-//        sendButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -84,12 +70,15 @@ public class ClientUI extends JFrame implements ActionListener {
                 } else if (event.getSource().equals(DISCONNECTButton)) {
 //---------------------------------- DISCONNECT Btn Start ----------------------------------
 
-//                    System.out.println("PRESSEDQQ - " + messageToSend.getText() + ".");
+                    if (!clientApp.isConnected) {
+                        messageBox.append("You are already DISCONNECTED\n");
+                    } else {
+                        clientApp.disconnect();
+                    }
 
                 } else if (event.getSource().equals(sendButton)) {
 //---------------------------------- SEND_MSG Btn Start ----------------------------------
 
-//                    System.out.println("PRESSED - " + messageToSend.getText() + ".");
                     String msg = messageToSend.getText().trim();
                     if (!clientApp.isConnected) {
                         messageBox.append("Connect first");
@@ -102,12 +91,4 @@ public class ClientUI extends JFrame implements ActionListener {
         });
         buttonPress.start();
     }
-
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("ClientUI");
-//        frame.setContentPane(new ClientUI().clientPanel);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
 }
