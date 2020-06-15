@@ -82,7 +82,8 @@ public class ServerApp {
                         activeUsersBroadcast.setMessageType(MessageType.ACTIVE_USERS_LIST);
                         activeUsersBroadcast.setActiveUsers(activeUsers);
                         for (ClientHandler ch : activeUsers) {
-                            ch.objOS.writeObject(activeUsersBroadcast);
+                            if (ch.isloggedin)
+                                ch.objOS.writeObject(activeUsersBroadcast);
                         }
 
                         serverUIListener.onChatsUpdate("Active Users Updated to all active clients");
@@ -131,6 +132,7 @@ public class ServerApp {
 
     interface OnServerDataUpdateListener {
         void onChatsUpdate(String message);
+
         void onOnlineUsersUpdate();
     }
 }

@@ -54,7 +54,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="f60de">
+          <scrollpane id="f60de" binding="messageBoxScrollPane">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -64,6 +64,7 @@
               <component id="d140d" class="javax.swing.JTextArea" binding="messageBox">
                 <constraints/>
                 <properties>
+                  <editable value="false"/>
                   <font size="14"/>
                   <lineWrap value="true"/>
                   <text value=""/>

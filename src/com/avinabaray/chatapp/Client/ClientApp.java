@@ -148,8 +148,8 @@ public class ClientApp {
                                 clientUIListener.onChatsUpdate(received.getSender() + ": " + received.getMessage());
                                 break;
                             case ACTIVE_USERS_LIST:
+                                // To get the activeUsers Vector to the Client side
                                 ClientApp.activeUsers = received.getActiveUsers();
-                                System.err.println("Online users: " + received.getActiveUsers().size());
                                 break;
                         }
                     } catch (SocketException e) {
@@ -171,7 +171,7 @@ public class ClientApp {
             }
         });
 
-        sendMessageThread.start();
+//        sendMessageThread.start();
         readMessage.start();
 
     }

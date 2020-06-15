@@ -28,6 +28,8 @@ public class ServerUI extends JFrame {
             @Override
             public void onChatsUpdate(String message) {
                 chats.append(message + "\n");
+                // This ensures auto scrolling of the JTextArea
+                chats.setCaretPosition(chats.getDocument().getLength());
             }
 
             @Override
@@ -38,6 +40,7 @@ public class ServerUI extends JFrame {
                     if (ch.isloggedin)
                         onlineUsers.append(ch.name + "\n");
                 }
+                onlineUsers.setCaretPosition(onlineUsers.getDocument().getLength());
             }
         });
 

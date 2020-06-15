@@ -1,6 +1,7 @@
 package com.avinabaray.chatapp.Client;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class ClientUI extends JFrame implements ActionListener {
     private JTextField usernameText;
     private JButton CONNECTButton;
     private JButton DISCONNECTButton;
+    private JScrollPane messageBoxScrollPane;
 
     private ClientApp clientApp;
 
@@ -31,6 +33,8 @@ public class ClientUI extends JFrame implements ActionListener {
             @Override
             public void onChatsUpdate(String message) {
                 messageBox.append(message + "\n");
+                // This ensures auto scrolling of the JTextArea
+                messageBox.setCaretPosition(messageBox.getDocument().getLength());
             }
         });
 
@@ -47,7 +51,7 @@ public class ClientUI extends JFrame implements ActionListener {
                 if (event.getSource().equals(CONNECTButton)) {
 //---------------------------------- CONNECT Btn Start ----------------------------------
 
-                    String username = usernameText.getText().trim().replaceAll("\\s+", "");
+                    String username = usernameText.getText().trim().replaceAll("\\s+", "").toUpperCase();
                     if (username.isEmpty()) {
                         messageBox.append("USERNAME CAN'T BE EMPTY\n");
                     } else if (clientApp.isConnected) {
@@ -81,7 +85,7 @@ public class ClientUI extends JFrame implements ActionListener {
 
                     String msg = messageToSend.getText().trim();
                     if (!clientApp.isConnected) {
-                        messageBox.append("Connect first");
+                        messageBox.append("Connect first\n");
                     } else if (!msg.isEmpty()) {
                         clientApp.broadcastMessage(msg);
                     }
