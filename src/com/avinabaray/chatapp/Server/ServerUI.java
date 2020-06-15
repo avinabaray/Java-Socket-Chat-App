@@ -4,8 +4,8 @@ import javax.swing.*;
 
 public class ServerUI {
     private JPanel serverPanel;
-    private JButton button1;
-    private JButton button2;
+    private JButton STARTButton;
+    private JButton STOPButton;
     private JTextArea textArea1;
     private JTextArea textArea2;
 
