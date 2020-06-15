@@ -25,6 +25,7 @@ public class ClientUI extends JFrame implements ActionListener {
         setContentPane(clientPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
+        setResizable(false);
         setVisible(true);
 
         messageBox.append("Enter new username (single word allowed)\n");

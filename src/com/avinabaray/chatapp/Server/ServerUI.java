@@ -21,6 +21,7 @@ public class ServerUI extends JFrame {
         setContentPane(serverPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
+        setResizable(false);
         setVisible(true);
 
         serverApp = new ServerApp();

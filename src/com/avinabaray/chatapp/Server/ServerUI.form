@@ -26,6 +26,7 @@
             </constraints>
             <properties>
               <borderPainted value="true"/>
+              <font size="14"/>
               <text value="START"/>
             </properties>
           </component>
@@ -35,6 +36,7 @@
             </constraints>
             <properties>
               <borderPainted value="true"/>
+              <font size="14"/>
               <text value="STOP"/>
             </properties>
           </component>
@@ -61,6 +63,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
+                  <font size="14"/>
                   <lineWrap value="true"/>
                   <wrapStyleWord value="true"/>
                 </properties>
@@ -80,6 +83,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
+                  <font size="14"/>
                   <lineWrap value="true"/>
                   <wrapStyleWord value="true"/>
                 </properties>
@@ -91,6 +95,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <font size="14"/>
               <opaque value="false"/>
               <text value="Chats and Logs"/>
             </properties>
@@ -100,6 +105,7 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <font size="14"/>
               <text value="Online Users"/>
             </properties>
           </component>
