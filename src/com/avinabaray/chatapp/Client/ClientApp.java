@@ -8,6 +8,7 @@ import com.avinabaray.chatapp.Server.ClientHandler;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.Vector;
@@ -138,6 +139,9 @@ public class ClientApp {
                                 System.err.println("Online users: " + received.getActiveUsers().size());
                                 break;
                         }
+                    } catch (SocketException e) {
+                        System.out.println("Server has stopped - Client Disconnected");
+                        System.exit(0);
                     } catch (IOException | ClassNotFoundException e) {
                         System.err.println("Error fetching message: " + e.getMessage());
                         e.printStackTrace();

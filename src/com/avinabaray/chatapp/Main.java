@@ -2,6 +2,7 @@ package com.avinabaray.chatapp;
 
 import com.avinabaray.chatapp.Client.ClientApp;
 import com.avinabaray.chatapp.Server.ServerApp;
+import com.avinabaray.chatapp.Server.ServerUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -29,7 +30,9 @@ public class Main {
 
         switch (sc.nextInt()) {
             case 1:
-                newServer();
+//                newServer();
+//                ServerUI.main(new String[]{"arg"});
+                new ServerUI();
                 break;
             case 2:
                 newClient();
@@ -52,7 +55,7 @@ public class Main {
 
     private void newServer() {
 
-        ServerApp.startListening();
+//        ServerApp.startListening();
 
 //        ServerSocket server = null;
 //        Socket socket = null;

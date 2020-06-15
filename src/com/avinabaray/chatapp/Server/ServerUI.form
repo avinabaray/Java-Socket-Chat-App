@@ -57,22 +57,32 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="ce8e" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+              <component id="ce8e" class="javax.swing.JTextArea" binding="chats">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <lineWrap value="true"/>
+                  <wrapStyleWord value="true"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
           <scrollpane id="99032">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="1" height="17"/>
+              </grid>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="fe6f8" class="javax.swing.JTextArea" binding="textArea2" default-binding="true">
+              <component id="fe6f8" class="javax.swing.JTextArea" binding="onlineUsers">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <lineWrap value="true"/>
+                  <wrapStyleWord value="true"/>
+                </properties>
               </component>
             </children>
           </scrollpane>

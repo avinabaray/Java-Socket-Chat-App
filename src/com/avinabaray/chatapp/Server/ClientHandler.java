@@ -14,17 +14,20 @@ public class ClientHandler extends Thread implements Serializable {
     private transient Scanner sc = new Scanner(System.in);
 
     public String name;
+    private transient ServerApp.OnServerDataUpdateListener serverUIListener;
     boolean isloggedin;
     private transient final Socket currSock;
     transient final ObjectInputStream objIS;
     transient final ObjectOutputStream objOS;
 
     ClientHandler(Socket currSock, String name,
-                  ObjectInputStream objIS, ObjectOutputStream objOS) {
+                  ObjectInputStream objIS, ObjectOutputStream objOS,
+                  ServerApp.OnServerDataUpdateListener serverUIListener) {
         this.currSock = currSock;
         this.objIS = objIS;
         this.objOS = objOS;
         this.name = name;
+        this.serverUIListener = serverUIListener;
 //        this.dataIS = dataIS;
 //        this.dataOS = dataOS;
         this.isloggedin = true;
@@ -38,7 +41,7 @@ public class ClientHandler extends Thread implements Serializable {
 
             try {
                 MessageModel received = (MessageModel) objIS.readObject();
-                System.out.println("Msg from " + received.getSender() +
+                serverUIListener.onChatsUpdate("Msg from " + received.getSender() +
                         " to " + received.getReceiver() + ": " + received.getMessage());
 
 //                System.out.println(ServerApp.activeUsers.size());
