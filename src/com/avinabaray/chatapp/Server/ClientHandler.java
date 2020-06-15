@@ -41,7 +41,7 @@ public class ClientHandler extends Thread implements Serializable {
                     case NORMAL_MSG:
                         serverUIListener.onChatsUpdate(
                                 "Msg from " + received.getSender() +
-                                " to " + received.getReceiver() +
+                                " to " + (received.getReceiver() == null ? "all" : received.getReceiver()) +
                                 ": " + received.getMessage());
 
                         MessageModel msgModelToSend = new MessageModel();

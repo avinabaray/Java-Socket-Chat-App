@@ -37,6 +37,11 @@ public class ClientUI extends JFrame implements ActionListener {
                 // This ensures auto scrolling of the JTextArea
                 messageBox.setCaretPosition(messageBox.getDocument().getLength());
             }
+
+            @Override
+            public void clearMessageArea() {
+                messageToSend.setText(null);
+            }
         });
 
         CONNECTButton.addActionListener(this);

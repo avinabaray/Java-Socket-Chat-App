@@ -196,6 +196,7 @@ public class ClientApp {
         System.err.println("MSG: " + message);
         try {
             objOS.writeObject(msgToSend);
+            clientUIListener.clearMessageArea();
         } catch (IOException e) {
             clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
             e.printStackTrace();
@@ -234,6 +235,7 @@ public class ClientApp {
 
     interface OnClientDataUpdateListener {
         void onChatsUpdate(String message);
+        void clearMessageArea();
     }
 
 }
