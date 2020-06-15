@@ -16,13 +16,6 @@ public class ServerUI extends JFrame {
 
     private ServerApp serverApp;
 
-    PrintStream serverChatOut = new PrintStream(new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
-            chats.append("" + (char) (b & 0xFF));
-        }
-    });
-
     public ServerUI() {
         super("Server App");
         setContentPane(serverPanel);

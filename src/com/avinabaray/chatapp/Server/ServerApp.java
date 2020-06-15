@@ -15,15 +15,15 @@ public class ServerApp {
     static Vector<ClientHandler> activeUsers = new Vector<>();
     static boolean isServerOn = false;
     private static int userNo = 1;
-    private OnServerDataUpdateListener serverUIListener;
     private ServerSocket serverSock;
+    private OnServerDataUpdateListener serverUIListener;
 
     void setOnServerDataUpdateListener(OnServerDataUpdateListener lis) {
         this.serverUIListener = lis;
     }
 
     public void startListening() {
-        serverUIListener.onChatsUpdate("ENTERED");
+//        serverUIListener.onChatsUpdate("ENTERED");
         try {
             serverSock = new ServerSocket(Constants.PORT);
 //            System.out.println("Server Started");
@@ -68,7 +68,7 @@ public class ServerApp {
                         sysMsg.setMessage(Constants.NEW_USER);
                         objOS.writeObject(sysMsg);
                         serverUIListener.onChatsUpdate("Assigning new handler for this client");
-                        serverUIListener.onOnlineUsersUpdate(username + " added");
+                        serverUIListener.onOnlineUsersUpdate(username/* + " added"*/);
                         // creating a new thread object
                         ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS, serverUIListener);
                         // Adding the user to the activeUsers vector

@@ -17,24 +17,31 @@ public class ClientApp {
 
     private String username = "user";
     private String prevUser = "";
+    boolean isConnected = false;
     private static Vector<ClientHandler> activeUsers = new Vector<>();
+    private OnClientDataUpdateListener clientUIListener;
+    private ObjectOutputStream objOS;
+    private ObjectInputStream objIS;
 
-    public void startClient() throws UnknownHostException, IOException {
+
+    void setOnClientDataUpdateListener(OnClientDataUpdateListener lis) {
+        this.clientUIListener = lis;
+    }
+
+    public void startClient(String username) throws UnknownHostException, IOException {
         Scanner sc = new Scanner(System.in);
 
+        clientUIListener.onChatsUpdate("Requesting connection...");
         // getting host IP
         InetAddress ip = InetAddress.getByName(Constants.HOST_NAME);
-
         Socket sock = new Socket(ip, Constants.PORT);
+
         // input and output streams
-//        DataInputStream dataIS = new DataInputStream(sock.getInputStream());
-//        DataOutputStream dataOS = new DataOutputStream(sock.getOutputStream());
+        objOS = new ObjectOutputStream(sock.getOutputStream());
+        objIS = new ObjectInputStream(sock.getInputStream());
 
-        ObjectOutputStream objOS = new ObjectOutputStream(sock.getOutputStream());
-        ObjectInputStream objIS = new ObjectInputStream(sock.getInputStream());
-
-        System.out.print("Enter new username (single word allowed): ");
-        username = sc.nextLine().trim();
+//        clientUIListener.onChatsUpdate("Enter new username (single word allowed): ");
+//        username = sc.nextLine().trim();
 
         MessageModel userModel = new MessageModel();
         userModel.setMessageType(MessageType.USERNAME);
@@ -45,12 +52,17 @@ public class ClientApp {
         try {
             userModel = (MessageModel) objIS.readObject();
             if (userModel.getMessage().equals(Constants.USER_EXISTS)) {
-                System.out.println("username already exists...");
+                clientUIListener.onChatsUpdate("username already exists...");
+                clientUIListener.onChatsUpdate("Enter another Username");
+                isConnected = false;
                 sock.close();
-                startClient();
+//                startClient();
                 return;
             } else if (userModel.getMessage().equals(Constants.NEW_USER)) {
-                System.out.println("New user created");
+                this.username = username;
+                isConnected = true;
+                clientUIListener.onChatsUpdate("New user created");
+                clientUIListener.onChatsUpdate("Now you can Start Chatting");
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -132,7 +144,7 @@ public class ClientApp {
                         received = (MessageModel) objIS.readObject();
                         switch (received.getMessageType()) {
                             case NORMAL_MSG:
-                                System.out.println(received.getSender() + ": " + received.getMessage());
+                                clientUIListener.onChatsUpdate(received.getSender() + ": " + received.getMessage());
                                 break;
                             case ACTIVE_USERS_LIST:
                                 ClientApp.activeUsers = received.getActiveUsers();
@@ -140,10 +152,10 @@ public class ClientApp {
                                 break;
                         }
                     } catch (SocketException e) {
-                        System.out.println("Server has stopped - Client Disconnected");
+                        clientUIListener.onChatsUpdate("Server has stopped - Client Disconnected");
                         System.exit(0);
                     } catch (IOException | ClassNotFoundException e) {
-                        System.err.println("Error fetching message: " + e.getMessage());
+                        clientUIListener.onChatsUpdate("Error fetching message: " + e.getMessage());
                         e.printStackTrace();
                         break;
                     }
@@ -177,11 +189,20 @@ public class ClientApp {
         try {
             objOS.writeObject(msgToSend);
         } catch (IOException e) {
-            System.err.println("Error sending message: " + e.getMessage());
+            clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
         }
+    }
+
+    public void broadcastMessage(String msg) {
+        sendMessage(username, null, msg, objOS);
     }
 
 //    interface SetOnActiveUsersReceivedListener {
 //        public void onActiveUsersReceived();
 //    }
+
+    interface OnClientDataUpdateListener {
+        void onChatsUpdate(String message);
+    }
+
 }

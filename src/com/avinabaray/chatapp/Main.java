@@ -1,6 +1,7 @@
 package com.avinabaray.chatapp;
 
 import com.avinabaray.chatapp.Client.ClientApp;
+import com.avinabaray.chatapp.Client.ClientUI;
 import com.avinabaray.chatapp.Server.ServerApp;
 import com.avinabaray.chatapp.Server.ServerUI;
 
@@ -35,7 +36,7 @@ public class Main {
                 new ServerUI();
                 break;
             case 2:
-                newClient();
+                new ClientUI();
                 break;
             default:
                 System.out.println("Choose a valid option");
@@ -45,7 +46,7 @@ public class Main {
 
     private void newClient() {
         try {
-            (new ClientApp()).startClient();
+            (new ClientApp()).startClient("user1");
         } catch (UnknownHostException e) {
             System.err.println("Host Address is invalid: " + e.getMessage());
         } catch (IOException e) {
