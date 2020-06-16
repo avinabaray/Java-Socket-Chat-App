@@ -5,6 +5,9 @@ import com.avinabaray.chatapp.Server.ServerUI;
 
 import java.util.Scanner;
 
+/**
+ * @author Avinaba Ray
+ */
 public class Main {
 
     private final Scanner sc = new Scanner(System.in);

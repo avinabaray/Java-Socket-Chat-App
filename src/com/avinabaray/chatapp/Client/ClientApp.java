@@ -16,6 +16,9 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.Vector;
 
+/**
+ * @author Avinaba Ray
+ */
 public class ClientApp {
 
     private String username = "user";

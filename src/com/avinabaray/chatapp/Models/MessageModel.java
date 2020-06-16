@@ -5,6 +5,9 @@ import com.avinabaray.chatapp.Server.ClientHandler;
 import java.io.Serializable;
 import java.util.Vector;
 
+/**
+ * @author Avinaba Ray
+ */
 public class MessageModel implements Serializable {
 
     private MessageType messageType;

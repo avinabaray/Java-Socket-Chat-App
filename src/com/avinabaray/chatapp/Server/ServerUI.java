@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * @author Avinaba Ray
+ */
 public class ServerUI extends JFrame {
     private JPanel serverPanel;
     private JButton STARTButton;

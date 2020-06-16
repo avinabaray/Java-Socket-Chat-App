@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 
+/**
+ * @author Avinaba Ray
+ */
 public class ClientUI extends JFrame implements ActionListener {
     private JTextArea messageToSend;
     private JButton sendButton;

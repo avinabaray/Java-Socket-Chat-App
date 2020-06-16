@@ -12,6 +12,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Vector;
 
+/**
+ * @author Avinaba Ray
+ */
 public class ServerApp {
 
     static Vector<ClientHandler> activeUsers = new Vector<>();

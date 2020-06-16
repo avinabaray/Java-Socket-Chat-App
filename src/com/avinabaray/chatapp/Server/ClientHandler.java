@@ -10,6 +10,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
+/**
+ * @author Avinaba Ray
+ */
 public class ClientHandler extends Thread implements Serializable {
 
     public String name;
