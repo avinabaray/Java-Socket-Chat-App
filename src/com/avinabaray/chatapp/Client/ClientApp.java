@@ -5,7 +5,10 @@ import com.avinabaray.chatapp.Models.MessageModel;
 import com.avinabaray.chatapp.Models.MessageType;
 import com.avinabaray.chatapp.Server.ClientHandler;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -24,7 +27,6 @@ public class ClientApp {
     private ObjectInputStream objIS;
     private Socket sock;
 
-
     void setOnClientDataUpdateListener(OnClientDataUpdateListener lis) {
         this.clientUIListener = lis;
     }
@@ -41,9 +43,6 @@ public class ClientApp {
         objOS = new ObjectOutputStream(sock.getOutputStream());
         objIS = new ObjectInputStream(sock.getInputStream());
 
-//        clientUIListener.onChatsUpdate("Enter new username (single word allowed): ");
-//        username = sc.nextLine().trim();
-
         MessageModel userModel = new MessageModel();
         userModel.setMessageType(MessageType.USERNAME);
         userModel.setMessage(username);
@@ -57,7 +56,6 @@ public class ClientApp {
                 clientUIListener.onChatsUpdate("Enter another Username");
                 isConnected = false;
                 sock.close();
-//                startClient();
                 return;
             } else if (userModel.getMessage().equals(Constants.NEW_USER)) {
                 this.username = username;
@@ -66,12 +64,18 @@ public class ClientApp {
                 clientUIListener.onChatsUpdate("Now you can Start Chatting");
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Constants.debug)
+                e.printStackTrace();
             System.exit(0);
         }
 
 
-        // send message Thread
+        // send message Thread (for CLI version) NOT in use now
+        /*
+         * This Thread was used for the CLI version of this chat application.
+         * But now, all the "send message" operations are handled by the
+         * 'buttonPress' Thread in the ClientUI class.
+         */
         Thread sendMessageThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -154,17 +158,21 @@ public class ClientApp {
                         }
                     } catch (SocketException e) {
                         clientUIListener.onChatsUpdate("Server has stopped - Client Disconnected");
-                        e.printStackTrace();
+                        if (Constants.debug)
+                            e.printStackTrace();
                         System.exit(0);
                     } catch (EOFException e) {
-                        System.err.println("Disconnect by User Action");
+                        if (Constants.debug)
+                            System.err.println("Disconnect by User Action");
                         clientUIListener.onChatsUpdate("DISCONNECTED SUCCESSFULLY");
                         isConnected = false;
-                        e.printStackTrace();
+                        if (Constants.debug)
+                            e.printStackTrace();
                         break;
                     } catch (IOException | ClassNotFoundException e) {
                         clientUIListener.onChatsUpdate("Error fetching message: " + e.getMessage());
-                        e.printStackTrace();
+                        if (Constants.debug)
+                            e.printStackTrace();
                         break;
                     }
                 }
@@ -193,13 +201,15 @@ public class ClientApp {
         msgToSend.setSender(sender);
         msgToSend.setReceiver(receiver);
         msgToSend.setMessage(message);
-        System.err.println("MSG: " + message);
+        if (Constants.debug)
+            System.err.println("MSG: " + message);
         try {
             objOS.writeObject(msgToSend);
             clientUIListener.clearMessageArea();
         } catch (IOException e) {
             clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
-            e.printStackTrace();
+            if (Constants.debug)
+                e.printStackTrace();
         }
     }
 
@@ -215,23 +225,10 @@ public class ClientApp {
         } catch (IOException e) {
             clientUIListener.onChatsUpdate("Error sending message: " + e.getMessage());
             clientUIListener.onChatsUpdate("DISCONNECT FAILED");
-            e.printStackTrace();
+            if (Constants.debug)
+                e.printStackTrace();
         }
-
-
-//        try {
-//            sock.close();
-//            isConnected = false;
-//            clientUIListener.onChatsUpdate("DISCONNECTED SUCCESSFULLY");
-//        } catch (IOException e) {
-//            clientUIListener.onChatsUpdate("DISCONNECT FAILED");
-//            e.printStackTrace();
-//        }
     }
-
-//    interface SetOnActiveUsersReceivedListener {
-//        public void onActiveUsersReceived();
-//    }
 
     interface OnClientDataUpdateListener {
         void onChatsUpdate(String message);

@@ -3,9 +3,6 @@ package com.avinabaray.chatapp.Server;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 public class ServerUI extends JFrame {
     private JPanel serverPanel;
@@ -74,11 +71,4 @@ public class ServerUI extends JFrame {
         });
     }
 
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("ServerUI");
-//        frame.setContentPane(new ServerUI().serverPanel);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
 }

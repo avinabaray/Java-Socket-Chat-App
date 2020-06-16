@@ -4,7 +4,9 @@ import com.avinabaray.chatapp.Constants;
 import com.avinabaray.chatapp.Models.MessageModel;
 import com.avinabaray.chatapp.Models.MessageType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -23,11 +25,12 @@ public class ServerApp {
     }
 
     public void startListening() {
-//        serverUIListener.onChatsUpdate("ENTERED");
         try {
             serverSock = new ServerSocket(Constants.PORT);
-//            System.out.println("Server Started");
-//            System.out.println("Waiting for a client");
+            if (Constants.debug) {
+                System.out.println("Server Started");
+                System.out.println("Waiting for a client");
+            }
             serverUIListener.onChatsUpdate("Server Started");
             serverUIListener.onChatsUpdate("Waiting for a client");
             while (true) {
@@ -35,15 +38,13 @@ public class ServerApp {
                 Socket currSock = null;
                 try {
                     currSock = serverSock.accept();
-//                    System.out.println("New client is connected : " + currSock);
+                    if (Constants.debug)
+                        System.out.println("New client is connected : " + currSock);
                     serverUIListener.onChatsUpdate("New client is connected : " + currSock);
 
                     // input and output streams
                     ObjectOutputStream objOS = new ObjectOutputStream(currSock.getOutputStream());
                     ObjectInputStream objIS = new ObjectInputStream(currSock.getInputStream());
-
-//                    DataInputStream dataIS = new DataInputStream(currSock.getInputStream());
-//                    DataOutputStream dataOS = new DataOutputStream(currSock.getOutputStream());
 
                     boolean validUsername = true;
                     String username;
@@ -57,7 +58,8 @@ public class ServerApp {
                             }
                         }
                     } else {
-//                        System.err.println("Username not defined");
+                        if (Constants.debug)
+                            System.err.println("Username not defined");
                         serverUIListener.onChatsUpdate("Username not defined");
                         continue;
                     }
@@ -68,6 +70,7 @@ public class ServerApp {
                         sysMsg.setMessage(Constants.NEW_USER);
                         objOS.writeObject(sysMsg);
                         serverUIListener.onChatsUpdate("Assigning new handler for this client");
+
                         // creating a new thread object
                         ClientHandler clientHandler = new ClientHandler(currSock, username, objIS, objOS, serverUIListener);
                         // Adding the user to the activeUsers vector
@@ -88,7 +91,7 @@ public class ServerApp {
 
                         serverUIListener.onChatsUpdate("Active Users Updated to all active clients");
 
-                        // Incrementing user count
+                        // Incrementing user count, presently not in use though
                         userNo++;
                     } else {
                         sysMsg.setMessage(Constants.USER_EXISTS);
@@ -100,10 +103,12 @@ public class ServerApp {
                     serverUIListener.onChatsUpdate("All clients disconnected");
                     isServerOn = false;
                     activeUsers.clear();
-                    e.printStackTrace();
+                    if (Constants.debug)
+                        e.printStackTrace();
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Constants.debug)
+                        e.printStackTrace();
                     if (currSock != null) {
                         currSock.close();
                     }
@@ -111,7 +116,8 @@ public class ServerApp {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Constants.debug)
+                e.printStackTrace();
         }
 
     }
@@ -119,20 +125,20 @@ public class ServerApp {
     public void stopListening() {
         serverUIListener.onChatsUpdate("SERVER STOPPING...");
         try {
-            System.out.println("QQQ");
             serverSock.close();
             for (ClientHandler ch : activeUsers) {
                 ch.currSock.close();
             }
         } catch (IOException e) {
-            System.out.println("ServerSocket didn't close");
-            e.printStackTrace();
+            if (Constants.debug) {
+                System.out.println("ServerSocket didn't close");
+                e.printStackTrace();
+            }
         }
     }
 
     interface OnServerDataUpdateListener {
         void onChatsUpdate(String message);
-
         void onOnlineUsersUpdate();
     }
 }

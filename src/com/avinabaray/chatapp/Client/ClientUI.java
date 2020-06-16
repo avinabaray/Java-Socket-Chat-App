@@ -1,7 +1,8 @@
 package com.avinabaray.chatapp.Client;
 
+import com.avinabaray.chatapp.Constants;
+
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class ClientUI extends JFrame implements ActionListener {
     private ClientApp clientApp;
 
     public ClientUI() {
-        super("ClientUI");
+        super("Client App");
         setContentPane(clientPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
@@ -67,13 +68,16 @@ public class ClientUI extends JFrame implements ActionListener {
                             clientApp.startClient(username);
                         } catch (UnknownHostException e) {
                             messageBox.append("Host Address is invalid: " + e.getMessage() + "\n");
-                            e.printStackTrace();
+                            if (Constants.debug)
+                                e.printStackTrace();
                         } catch (ConnectException e) {
                             messageBox.append("Server refused to Connect\n");
-                            e.printStackTrace();
+                            if (Constants.debug)
+                                e.printStackTrace();
                         } catch (IOException e) {
                             System.err.println("Error in I/O: " + e.getMessage() + "\n");
-                            e.printStackTrace();
+                            if (Constants.debug)
+                                e.printStackTrace();
                         }
                     }
 
